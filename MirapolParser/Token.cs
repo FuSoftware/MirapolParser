@@ -14,7 +14,10 @@ namespace MirapolParser
         OPEN_BRACKET,
         CLOSE_BRACKET,
         VARIABLE,
-        LOCAL_VARIABLE
+        LOCAL_VARIABLE,
+        IF,
+        ELSIF,
+        ELSE
     }
 
     class Token
@@ -37,29 +40,7 @@ namespace MirapolParser
 
         public string GetTypeString()
         {
-            switch(this.Type)
-            {
-                case TokenType.COMMAND:
-                    return "command";
-                case TokenType.SPECIAL:
-                    return "special";
-                case TokenType.WHITESPACE:
-                    return "whitespace";
-                case TokenType.TEXT:
-                    return "text";
-                case TokenType.PUNCTUATION:
-                    return "punctuation";
-                case TokenType.OPEN_BRACKET:
-                    return "bracket_o";
-                case TokenType.CLOSE_BRACKET:
-                    return "bracket_c";
-                case TokenType.VARIABLE:
-                    return "gvar";
-                case TokenType.LOCAL_VARIABLE:
-                    return "lvar";
-                default:
-                    return "";
-            }
+            return this.Type.ToString();
         }
 
         override public string ToString()

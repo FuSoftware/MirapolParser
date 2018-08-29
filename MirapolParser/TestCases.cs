@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using MirapolParser.AST;
 
@@ -23,6 +24,23 @@ namespace MirapolParser
             MacroNode m = new MacroNode("macro", new List<ASTNode>(){ m_1, m_2, m_3 });
 
             Console.WriteLine(m.ToTaggedJS());
+        }
+
+        static public void TestParser()
+        {
+            TestParser("Tests/HelloWorld.tw", "Tests/HelloWorld.html");
+        }
+
+        static public void TestParser(string infile, string outfile)
+        {
+            string sinfile = File.ReadAllText(infile);
+
+            Parser p = new Parser(sinfile);
+
+            string contents = p.ParseAll().ToTaggedJS();
+
+            File.Delete(outfile);
+            File.WriteAllText(outfile,contents);
         }
     }
 }

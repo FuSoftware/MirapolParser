@@ -1,0 +1,14 @@
+﻿\hidden{
+	\set{\charisma}{10}
+	\set{\Mirapol}{MiraPol}
+}
+
+\heading{1}{My Hello World Story}
+
+Hello, I am the \Mirapol story format!
+
+I support \it{italics}, \bf{bold}, and \it{\bf{both}} !
+
+I also have a charisma of \charisma !
+
+If you don't like me, here's the way \link{Passage 2}{out}.

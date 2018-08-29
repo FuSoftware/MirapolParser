@@ -6,41 +6,44 @@ namespace MirapolParser
 {
     class InputStream
     {
-        long pos = 0;
-        long col = 0;
-        long line = 0;
+        public long Pos { set;  get; }
+        public long Col { set;  get; }
+        public long Line { set;  get; }
         private char[] input;
 
         public InputStream(string input)
         {
             this.input = input.ToCharArray();
-        }
+            Pos = 0;
+            Col = 0;
+            Line = 0;
+    }
 
-        public char next()
+        public char Next()
         {
-            var ch = this.input[pos++];
+            var ch = this.input[Pos++];
             if (ch == '\n')
             {
-                line++;
-                col = 0;
+                Line++;
+                Col = 0;
             }
             else
             {
-                col++;
+                Col++;
             }  
             return ch;
         }
-        public char peek()
+        public char Peek()
         {
-            return this.input[pos];
+            return this.input[Pos];
         }
-        public bool eof()
+        public bool EOF()
         {
-            return this.pos >= this.input.LongLength;
+            return this.Pos >= this.input.LongLength;
         }
-        public void croak(string msg)
+        public void Croak(string msg)
         {
-            throw new Exception(msg + " (" + line + ":" + col + ")");
+            throw new Exception(msg + " (" + Line + ":" + Col + ")");
         }
     }
 }

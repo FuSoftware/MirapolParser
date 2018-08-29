@@ -8,12 +8,17 @@ namespace MirapolParser
 {
     class TokenStream
     {
-        InputStream input;
+        public InputStream Input { get; }
         Token current;
+
+        public TokenStream(string input)
+        {
+            this.Input = new InputStream(input);
+        }
 
         public TokenStream(InputStream input)
         {
-            this.input = input;
+            this.Input = input;
         }
 
         delegate bool Predicate(char c);
@@ -95,42 +100,54 @@ namespace MirapolParser
         string ReadWhile(Predicate predicate)
         {
             string str = "";
-            while (!input.eof() && predicate(input.peek()))
-                str += input.next();
+            while (!Input.EOF() && predicate(Input.Peek()))
+                str += Input.Next();
             return str;
         }
 
         private Token ReadNext()
         {
-            if (input.eof()) return null;
-            char ch = input.peek();
+            if (Input.EOF()) return null;
+            char ch = Input.Peek();
 
             if (IsBacklash(ch))
             {
-                this.input.next();
-                return new Token(TokenType.COMMAND, ReadWhile(IsText));
+                this.Input.Next();
+                string text = ReadWhile(IsText);
+
+                switch (text)
+                {
+                    case "if":
+                        return new Token(TokenType.IF, text);
+                    case "elsif":
+                        return new Token(TokenType.ELSIF, text);
+                    case "else":
+                        return new Token(TokenType.ELSE, text);
+                    default:
+                        return new Token(TokenType.COMMAND, text);
+                }
             }
             else if(IsDollar(ch))
             {
-                this.input.next();
+                this.Input.Next();
                 return new Token(TokenType.VARIABLE, ReadWhile(IsText));
             }
             else if (IsUnderscore(ch))
             {
-                this.input.next();
+                this.Input.Next();
                 return new Token(TokenType.LOCAL_VARIABLE, ReadWhile(IsText));
             }
             else if (IsOpenBracket(ch))
             {
-                return new Token(TokenType.OPEN_BRACKET, input.next());
+                return new Token(TokenType.OPEN_BRACKET, Input.Next());
             }
             else if (IsCloseBracket(ch))
             {
-                return new Token(TokenType.CLOSE_BRACKET, input.next());
+                return new Token(TokenType.CLOSE_BRACKET, Input.Next());
             }
             else if(IsSpecialChar(ch))
             {
-                return new Token(TokenType.SPECIAL, input.next());
+                return new Token(TokenType.SPECIAL, Input.Next());
             }
             else if (IsText(ch))
             {
@@ -146,7 +163,7 @@ namespace MirapolParser
             }
             else
             {
-                this.input.croak("Can't handle character: " + ch);
+                this.Input.Croak("Can't handle character: " + ch);
                 return null;
             }
         }

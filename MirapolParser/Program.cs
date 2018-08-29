@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.IO;
 
 namespace MirapolParser
 {
@@ -9,8 +10,17 @@ namespace MirapolParser
     {
         static void Main(string[] args)
         {
-            //TestTokens(TestCases.SimpleFunction, true);
-            TestCases.TestJSCreationFunction();
+            try
+            {
+                //TestTokens(TestCases.SimpleFunction, true);
+                //TestTokens(File.ReadAllText("Tests/HelloWorld.tw"), true);
+                TestCases.TestParser();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
             Console.WriteLine("Press Enter to exit...");
             Console.ReadLine();
         }
@@ -33,6 +43,13 @@ namespace MirapolParser
             InputStream ins = new InputStream(input);
             TokenStream ts = new TokenStream(ins);
             Token t = null;
+
+            FileStream ostrm;
+            StreamWriter writer;
+            TextWriter oldOut = Console.Out;
+            ostrm = new FileStream("Tests/Log.txt", FileMode.OpenOrCreate, FileAccess.Write);
+            writer = new StreamWriter(ostrm);
+            Console.SetOut(writer);
 
             sw.Start();
             do
@@ -57,6 +74,9 @@ namespace MirapolParser
                 Console.WriteLine("Parsing done in {0} ms", sw.ElapsedMilliseconds);
             }
 
+            Console.SetOut(oldOut);
+            writer.Close();
+            ostrm.Close();
             return sw.ElapsedMilliseconds;
         }
     }
